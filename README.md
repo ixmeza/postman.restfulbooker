@@ -6,18 +6,14 @@ API tests for [restful booker](https://restful-booker.herokuapp.com/) using **po
 
 - Ping
 - Auth
+- Create booking
+  * With valid data
+  * With invalid data
+- Update booking
+  * With valid data 
+  * With invalid data 
+- Delete booking
+  * Delete a booking
+  * Delete all bookings
 
-<ul> Create booking
-  <li> With valid data </li>
-  <li> *With invalid data</li> 
-</ul>
-<ul> Update booking
-  <li> With valid data </li>
-  <li> *With invalid data</li> 
-</ul>
-<ul> Delete booking
-  <li> Delete a booking </li>
-  <li> Delete all bookings</li> 
-</ul>
-
-*There is a :beetle:  in the API as it takes bad data such as: null values, checkin date later than checkout and negative prices.
+**NOTE: There are some:beetle:'s  in the API as it takes bad data such as: null values, checkin date later than checkout and negative prices & updating dates does not work correctly**
