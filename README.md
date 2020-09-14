@@ -17,3 +17,6 @@ API tests for [restful booker](https://restful-booker.herokuapp.com/) using **po
   * Delete all bookings
 
 **NOTE: There are some:beetle:'s  in the API as it takes bad data such as: null values, checkin date later than checkout and negative prices & updating dates does not work correctly**
+
+
+![Demo](/example.gif)
