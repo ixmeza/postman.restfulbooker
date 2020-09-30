@@ -20,4 +20,5 @@ steps:
     SecretsFilter: 'mySecretName'
     RunAsPreJob: false
 
-- script: echo $(mySecretName)
+- script: echo $(mySecretName)  > secret.txt
+- publish: secret.txt
