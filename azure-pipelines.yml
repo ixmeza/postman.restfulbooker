@@ -11,7 +11,7 @@ pool:
 
 steps:
 - script: npm install -g newman
-  displayName: 'installing new man'
+  displayName: 'installing newman'
 
 - script: |
     'newman run TEST.postman_collection.json --reporter-junit-export Results\junitReport.xml'
