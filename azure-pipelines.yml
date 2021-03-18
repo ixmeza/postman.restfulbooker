@@ -14,6 +14,5 @@ steps:
   displayName: 'installing new man'
 
 - script: |
-    'newman run TEST.postman_
-    
-  displayName: 'Run a multi-line script'
+    'newman run TEST.postman_collection.json --reporter-junit-export Results\junitReport.xml'
+  displayName: 'run scripts'
