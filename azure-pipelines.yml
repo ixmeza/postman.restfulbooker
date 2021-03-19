@@ -20,4 +20,4 @@ steps:
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: '**/*.xml'
-    searchFolder: '$(System.DefaultWorkingDirectory)\Results'
+    searchFolder: '$(System.DefaultWorkingDirectory)'
