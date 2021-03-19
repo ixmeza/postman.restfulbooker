@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/ixmeza/Web%20-%20Tests/_apis/build/status/ixmeza.postman.restfulbooker?branchName=master)](https://dev.azure.com/ixmeza/Web%20-%20Tests/_build/latest?definitionId=13&branchName=master)
+
 # postman.restfulbooker
 
 API tests for [restful booker](https://restful-booker.herokuapp.com/) using **postman**.
