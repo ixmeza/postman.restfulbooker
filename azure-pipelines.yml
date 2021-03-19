@@ -15,8 +15,9 @@ steps:
 - script: npm install newman
   displayName: 'install newman'
 - script: 'newman run rb.postman_collection.json -e remote.postman_environment.json --reporters cli,junit --reporter-junit-export Results/junitReport.xml'
+  continueOnError: true
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: '*.xml'
-    searchFolder: '$(System.DefaultWorkingDirectory)\Results\'
+    searchFolder: '$(System.DefaultWorkingDirectory)\Results\*.xml'
