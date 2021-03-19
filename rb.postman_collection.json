@@ -14,7 +14,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "eb1fba0e-f964-4d89-b23c-e2bea8fb54b5",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -72,7 +71,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "bef64397-4da4-4e5c-b86b-f153c6be6e17",
 								"exec": [
 									"pm.variables.set(\"firstname\", pm.variables.replaceIn('{{$randomFirstName}}'));",
 									"pm.variables.set(\"lastname\",pm.variables.replaceIn('{{$randomLastName}}'));",
@@ -113,19 +111,7 @@
 					],
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "admin",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "password123",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "POST",
 						"header": [
@@ -156,7 +142,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "ddd6ac74-9da5-4fe4-b0b2-408c9c60e874",
 								"exec": [
 									"pm.test(\"Status code should not be 200\", function () {",
 									"    pm.response.to.not.have.status(200);",
@@ -196,7 +181,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "0ec0135a-8ceb-4c4c-b9e2-f8686ebde504",
 								"exec": [
 									"pm.variables.set(\"firstname\", null);",
 									"pm.variables.set(\"lastname\", null);",
@@ -219,19 +203,7 @@
 					],
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "admin",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "password123",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "POST",
 						"header": [
@@ -256,8 +228,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Get Bookings",
@@ -268,9 +239,39 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "c782c838-8772-4173-b39c-c31ae530a310",
 								"exec": [
-									""
+									"const getTokenRequest = {",
+									"  method: 'POST',",
+									"  url: 'https://restful-booker.herokuapp.com/auth',",
+									"  body: {",
+									"      mode: 'formdata',",
+									"      formdata: [",
+									"          { key: 'username', value: 'admin' },",
+									"          { key: 'password', value: 'password123' }",
+									"      ]",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(getTokenRequest, (err, response) => {",
+									"  const jsonResponse = response.json();",
+									"  const newAccessToken = jsonResponse.token;",
+									"  console.log(newAccessToken);",
+									"  pm.variables.set('authToken', newAccessToken);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response should have results\", function () {",
+									"    pm.expect(pm.response.json().length).to.not.eql(0);",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -278,19 +279,7 @@
 					],
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "admin",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "password123",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [],
@@ -312,7 +301,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "feb7a0e7-cf94-4b8b-a91a-026bd22914eb",
 								"exec": [
 									"// get a predefined booking",
 									"// pm.variables.set(\"firstname\",\"John\");",
@@ -339,6 +327,20 @@
 									"    });",
 									"})",
 									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response should have results\", function () {",
+									"    pm.expect(pm.response.json().length).to.not.eql(0);",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -375,7 +377,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "27348ca2-7c6d-4e0a-9ef7-a321a082b92a",
 								"exec": [
 									"// set predefined values",
 									"// pm.variables.set(\"checkin\",\"2020-08-01\");",
@@ -390,6 +391,7 @@
 									"    method: 'GET',",
 									"    header: 'Content-Type:application/json\\nAccept:application/json'",
 									"}",
+									"",
 									"pm.sendRequest(getBookings,function(err, res){",
 									"    pm.expect(err).is.null;",
 									"    res.json().forEach(element => availableIds.push(element.bookingid));",
@@ -407,7 +409,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "0d4d240d-23a5-4abd-a9dd-450b051e596a",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -453,7 +454,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "1ee14ad0-3eee-4352-9780-24fafda91097",
 								"exec": [
 									"// get a predefined ID",
 									"// pm.variables.set(\"booking_id\",71)",
@@ -477,6 +477,22 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// this API has a bug it does not return values all the time",
+									"pm.test(\"Response should have results\", function () {",
+									"    pm.expect(pm.response.json().length).to.not.eql(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
@@ -495,8 +511,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Update Booking",
@@ -507,9 +522,27 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "28fa059c-7b2e-4b32-9655-1728e597680c",
 								"exec": [
 									"let url = pm.variables.get(\"rb_url\");",
+									"const tokenUrl = `${url}/auth`;",
+									"const getTokenRequest = {",
+									"  method: 'POST',",
+									"  header: { 'content-type': 'application/json' },",
+									"  url: tokenUrl,",
+									"  body: {",
+									"      mode: 'raw',",
+									"      raw : JSON.stringify({",
+									"            \"username\" : \"admin\",",
+									"            \"password\" : \"password123\"",
+									"        })",
+									"  }",
+									"};",
+									"pm.sendRequest(getTokenRequest, (err, response) => {",
+									"  const jsonResponse = response.json();",
+									"  const newAccessToken = jsonResponse.token;",
+									"  pm.variables.set('authToken', newAccessToken);",
+									"});",
+									"",
 									"let getBookings = {",
 									"    url: `${url}/booking`,",
 									"    method: 'GET',",
@@ -562,7 +595,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "209e8382-ddd2-4be9-ae58-603e150c002f",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -621,25 +653,18 @@
 					],
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "admin",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "password123",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "PUT",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Cookie",
+								"value": "token={{authToken}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -665,7 +690,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "39ebed7d-9585-4dbb-8264-fce3cd34cdc5",
 								"exec": [
 									"pm.test(\"Status code should not be 200\", function () {",
 									"    pm.response.to.not.have.status(200);",
@@ -705,9 +729,28 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "f148c6f4-c8b6-4e18-bcae-901eadb6ac47",
 								"exec": [
 									"let url = pm.variables.get(\"rb_url\");",
+									"const tokenUrl = `${url}/auth`;",
+									"const getTokenRequest = {",
+									"  method: 'POST',",
+									"  header: { 'content-type': 'application/json' },",
+									"  url: tokenUrl,",
+									"  body: {",
+									"      mode: 'raw',",
+									"      raw : JSON.stringify({",
+									"            \"username\" : \"admin\",",
+									"            \"password\" : \"password123\"",
+									"        })",
+									"  }",
+									"};",
+									"pm.sendRequest(getTokenRequest, (err, response) => {",
+									"  const jsonResponse = response.json();",
+									"  const newAccessToken = jsonResponse.token;",
+									"  pm.variables.set('authToken', newAccessToken);",
+									"});",
+									"",
+									"",
 									"let getBookings = {",
 									"    url: `${url}/booking`,",
 									"    method: 'GET',",
@@ -742,25 +785,18 @@
 					],
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "admin",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "password123",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "PUT",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Cookie",
+								"value": "token={{authToken}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -822,8 +858,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Delete Bookings",
@@ -834,8 +869,26 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "cc7887c1-7103-4559-9396-c0dc8d255fd3",
 								"exec": [
+									"let url = pm.variables.get(\"rb_url\");",
+									"const tokenUrl = `${url}/auth`;",
+									"const getTokenRequest = {",
+									"  method: 'POST',",
+									"  header: { 'content-type': 'application/json' },",
+									"  url: tokenUrl,",
+									"  body: {",
+									"      mode: 'raw',",
+									"      raw : JSON.stringify({",
+									"            \"username\" : \"admin\",",
+									"            \"password\" : \"password123\"",
+									"        })",
+									"  }",
+									"};",
+									"pm.sendRequest(getTokenRequest, (err, response) => {",
+									"  const jsonResponse = response.json();",
+									"  const newAccessToken = jsonResponse.token;",
+									"  pm.variables.set('authToken', newAccessToken);",
+									"});",
 									"",
 									"pm.variables.set(\"firstname\", pm.variables.replaceIn('{{$randomFirstName}}'));",
 									"pm.variables.set(\"lastname\",pm.variables.replaceIn('{{$randomLastName}}'));",
@@ -891,10 +944,9 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "3b258797-fa25-4c13-9250-ee061c3a734e",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
 									"});",
 									"",
 									"let url = pm.variables.get(\"rb_url\");",
@@ -914,19 +966,7 @@
 					],
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "admin",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "password123",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "DELETE",
 						"header": [
@@ -956,13 +996,46 @@
 					"name": "Delete all Bookings",
 					"event": [
 						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"pm.test(\"Size is 0\", function() {",
+									"    pm.expect(pm.response.json().length).to.eql(0);",
+									"   ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
 							"listen": "prerequest",
 							"script": {
-								"id": "ec33f443-3bec-4bbf-abbf-48dc5ee30bee",
 								"exec": [
 									"let url = pm.variables.get(\"rb_url\");",
-									"let ids = [];",
-									"let token = pm.variables.get(\"authToken\");",
+									"const tokenUrl = `${url}/auth`;",
+									"const getTokenRequest = {",
+									"  method: 'POST',",
+									"  header: { 'content-type': 'application/json' },",
+									"  url: tokenUrl,",
+									"  body: {",
+									"      mode: 'raw',",
+									"      raw : JSON.stringify({",
+									"            \"username\" : \"admin\",",
+									"            \"password\" : \"password123\"",
+									"        })",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(getTokenRequest, (err, response) => {",
+									"  const jsonResponse = response.json();",
+									"  const newAccessToken = jsonResponse.token;",
+									"    console.log(jsonResponse);",
+									"  pm.variables.set('authToken', newAccessToken);",
+									"});",
+									"",
 									"",
 									"pm.sendRequest(`${url}/booking`, function (err, response) {",
 									"    let res = response.json();",
@@ -973,7 +1046,7 @@
 									"            header: {",
 									"                'Accept': 'application/json',",
 									"                'Content-Type': 'application/json',",
-									"                'Cookie': `token=${token}`",
+									"                'Cookie': `token=${pm.variables.get(\"authToken\")}`",
 									"            },",
 									"        },function (err, response){",
 									"           console.log(response) ",
@@ -984,26 +1057,12 @@
 								],
 								"type": "text/javascript"
 							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"id": "ee8a2333-3ca4-4bab-84b1-91e33c6e1bf8",
-								"exec": [
-									"pm.test(\"Response time is less than 200ms\", function () {",
-									"    pm.expect(pm.response.responseTime).to.be.below(200);",
-									"});",
-									"",
-									"pm.test(\"Size is 0\", function() {",
-									"    pm.expect(pm.response.json().length).to.eql(0);",
-									"   ",
-									"});"
-								],
-								"type": "text/javascript"
-							}
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1018,8 +1077,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Ping",
@@ -1037,56 +1095,6 @@
 				}
 			},
 			"response": []
-		},
-		{
-			"name": "Auth",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "6d58c814-1e06-45da-8d98-250e168a6505",
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"pm.test(\"Response contains token\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.have.property(\"token\");",
-							"    var jsonData = pm.response.json();",
-							"    let token = jsonData.token;",
-							"    pm.environment.set(\"authToken\",token);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"username\" : \"admin\",\n    \"password\" : \"password123\"\n}"
-				},
-				"url": {
-					"raw": "{{rb_url}}/auth",
-					"host": [
-						"{{rb_url}}"
-					],
-					"path": [
-						"auth"
-					]
-				}
-			},
-			"response": []
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }
