@@ -14,4 +14,8 @@ steps:
   displayName: 'npm install'
 - script: npm install newman
   displayName: 'install newman'
-- script: 'newman run rb.postman_collection.json -e remote.postman_environment.json'
+- script: 'newman run rb.postman_collection.json -e remote.postman_environment.json --reporters junit'
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/newman/*.xml'
